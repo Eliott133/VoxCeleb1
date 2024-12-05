@@ -5,6 +5,6 @@ function formatTime(seconds) {
 }
 
 function formatDateTime(date){
-    return (date.getDate()+"_"+date.getMonth()+"_"+date.getFullYear()+"_"+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds());
+    return (date.getDate()+"_"+date.getMonth()+"_"+date.getFullYear()+"_"+date.getHours()+"_"+date.getMinutes()+"_"+date.getSeconds());
 }
 
