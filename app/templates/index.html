@@ -152,6 +152,7 @@
 </body>
 
 <script src="/static/js/utils/times.js"></script>
+<script src="/static/js/utils/csvToTable.js"></script>
 <script>
     const inputCsv = document.getElementById("file_csv_input");
     const delimiterSelect = document.getElementById('csv_separator');
@@ -178,86 +179,32 @@
     let filterString = Object.entries(activeFilters)
             .map(([key, value]) => key+"_"+value).join('_');
 
-    let fileOutputName = filterString+"_"+formatDateTime(dateTime)
+    let fileOutputName = filterString+"_"+formatDateTime(dateTime)+".pkl";
     inputFileNameOutput.value = fileOutputName;
 
     filtersInput.forEach((element) => {
         element.addEventListener('change', () => {
             activeFilters[element.id] = element.options[element.selectedIndex].dataset.filterName;
             const filterString = Object.entries(activeFilters)
-            .map(([key, value]) => key+"_"+value).join('_');
-            fileOutputName = filterString+"_"+formatDateTime(dateTime)
+                .map(([key, value]) => key+"_"+value).join('_');
+            fileOutputName = filterString+"_"+formatDateTime(dateTime)+".pkl";
             inputFileNameOutput.value = fileOutputName;
         })
     });
 
     inputCsv.addEventListener("change", (event) => {
-        file = event.target.files[0]; // Fichier sélectionné
-        console.log(file)
+        file = event.target.files[0];
         if (file && file.name.endsWith('.csv')) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const csvData = e.target.result; // Contenu du fichier CSV
                 csvToTable(csvData, delimiterSelected, maxRowSelected)
             };
-            reader.readAsText(file); // Lire le fichier comme du texte
+            reader.readAsText(file);
         } else {
             console.warn('Veuillez sélectionner un fichier CSV.');
         }
     });
-
-    function csvToTable(csv, delimiter = ',', maxRows = 10) {
-        // Diviser le contenu du CSV en lignes
-        const rows = csv.trim().split('\n');
-
-        // Extraire les en-têtes (première ligne)
-        const headers = rows.shift().split(delimiter);
-
-        const numRows = rows.length - 1; // Nombre de lignes (en ignorant l'en-tête)
-        const numColumns = rows[0].split(delimiter).length;
-
-        // Créer un élément table
-        const table = document.createElement('table');
-        table.classList.add('is-hoverable', 'table');
-        table.className = 'table is-bordered is-striped is-narrow is-hoverable is-fullwidth';
-
-        // Créer un élément thead pour les en-têtes
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        headers.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header.trim(); // Ajouter chaque en-tête
-            headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        // Créer un élément tbody pour les données
-        const tbody = document.createElement('tbody');
-        // Limiter le nombre de lignes affichées
-        const displayRows = rows.slice(0, maxRows);
-        displayRows.forEach(row => {
-            const dataRow = document.createElement('tr');
-            const cells = row.split(delimiter);
-            cells.forEach(cell => {
-                const td = document.createElement('td');
-                td.textContent = cell.trim(); // Ajouter chaque cellule
-                dataRow.appendChild(td);
-            });
-            tbody.appendChild(dataRow);
-        });
-        table.appendChild(tbody);
-
-        // Insérer la table dans un conteneur (par exemple, un div avec id="csv-preview")
-        const previewContainer = document.getElementById('csv-preview');
-        previewContainer.innerHTML = ''; // Effacer le contenu précédent
-        previewContainer.classList.remove('hidden');
-        previewContainer.appendChild(table); // Ajouter la nouvelle table
-
-        const csvDimension = document.getElementById('csv-info');
-        csvDimension.classList.remove('hidden');
-        csvDimension.textContent = `Le fichier contient ${numRows} lignes et ${numColumns} colonnes.`;
-    }
 
 </script>
 </html>
