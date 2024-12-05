@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> <!-- Lien vers la bibliothèque CSS Bulma -->
+    <script src="https://kit.fontawesome.com/b9ac88d97c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/css/global.css"> <!-- Css -->
+    <link rel="stylesheet" href="static/css/scrollbar.css"> <!-- Style de la scrollbar -->
+    <link rel="stylesheet" href="/static/css/animation/barAnimation.css">
+    <meta name="description" content="Ecouter les fichiers de données">
+    <title>Audio</title>
+</head>
+<body>
+    <div class="container">
+        <div class="block">
+            <div class="box">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
+                <form action="/audio" method="post" enctype="multipart/form-data">
+                    <div class="columns is-vcentered">
+                        <div class="column">
+                            <div class="file">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="pkl_file" accept=".pkl"/>
+                                    <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label"> Choisir votre fichier </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="field is-flex is-align-items-center">
+                                <label class="label mr-3" style="margin-bottom: 0;">Nombre d'audio à afficher</label>
+                                <div class="control">
+                                    <div class="select">
+                                        <select name="limit_audio" aria-label="nombre d'audio à afficher">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="-1">Tout</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <button class="button is-success is-fullwidth" type="submit" aria-label="envoyer">Envoyer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if file_name %}
+            <div class="block">
+                <h2 class="has-text-centered has-text-weight-bold is-size-4">Fichier en cours de lecture : <span class="has-text-primary">{{ file_name }}</span></h2>
+                <div class="notification is-info is-light">
+                    <p class="has-text-centered">{{ audio_display }} échantillons afficher sur <strong>{{ num_lines }}</strong></p>
+                </div>
+            </div>
+        {% endif %}    
+        {% if src_audio %}
+            <div class="block">
+                <div class="box">
+                    {% for path in src_audio %}
+                        <div class="block audio-player" data-src="/static/wav/{{ path }}">
+                            <div class="box">
+                                <span class="tag is-success">Femme</span>
+                                <span class="tag is-warning">Court</span>
+                                <span class="tag is-danger">Dramatique</span>
+                                <div class="columns is-vcentered">
+                                    <div class="column is-2 has-text-centered">
+                                        <p class="time-code">
+                                            <span class="current has-text-weight-bold">0:00</span> /
+                                            <span class="total-duration">0:00</span>
+                                        </p>
+                                    </div>
+                        
+                                    <div class="column is-1 has-text-centered">
+                                        <button class="button is-light play-btn">
+                                            <span class="icon is-medium">
+                                                <i class="fa-solid fa-play icon-play"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                        
+                                    <div class="column is-6">
+                                        <p class="has-text-centered truncated-text has-text-weight-bold">{{ path }}</p>
+                                        <progress class="progress is-small progress-sound is-primary" max="100" value="20">20%</progress>
+                                    </div>
+                        
+                                    <div class="column is-3 has-text-centered">
+                                        <div class="is-flex is-align-items-center is-justify-content-center">
+                                            <span class="icon is-medium">
+                                                <i class="fa-solid fa-volume-high sound-btn"></i>
+                                            </span>
+                                            <input type="range" class="volume-lvl ml-2" min="0" max="1" step="0.1" value="1" style="width: 80px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="block">
+                <div class="box has-text-centered">
+                    <p class="title is-4 has-text-grey">Les lecteurs audio arriveront bientôt...</p>
+                    <p class="subtitle is-6 has-text-grey">
+                        Envoyez un fichier de données pour commencer à écouter les échantillons
+                    </p>
+                    <div class="audio-animation">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+            </div>      
+        {% endif %}
+    </div>
+</body>
+
+<script src="/static/js/utils/times.js"></script>
+<script>
+// Sélectionner tous les lecteurs audio
+const audioPlayers = document.querySelectorAll('.audio-player');
+
+audioPlayers.forEach((audioPlayer) => {
+    const currentTimeCode = audioPlayer.querySelector('.current');
+    const durationTime = audioPlayer.querySelector('.total-duration');
+    const playBtn = audioPlayer.querySelector('.play-btn');
+    const iconPlay = playBtn.querySelector('i');
+    const soundBtn = audioPlayer.querySelector('.sound-btn');
+    const progressSound = audioPlayer.querySelector('.progress-sound');
+    const volumeLvl = audioPlayer.querySelector('.volume-lvl');
+
+    // Charger l'élément audio associé
+    const audioElement = new Audio(audioPlayer.dataset.src); // Utiliser une data-attribute pour le fichier audio
+    console.log(audioElement);
+
+    // Afficher la durée totale une fois les métadonnées chargées
+    audioElement.addEventListener("loadeddata", () => {
+        if (audioElement.readyState >= 3) {
+            progressSound.setAttribute('value', 0);
+            durationTime.textContent = formatTime(audioElement.duration);
+        }
+    });
+
+    // Gérer la lecture et la pause
+    playBtn.addEventListener("click", () => {
+        if (audioElement.readyState >= 3) {
+            if (audioElement.paused) {
+                iconPlay.classList.add('fa-pause');
+                iconPlay.classList.remove('fa-play');
+                audioElement.play().catch((error) => {
+                    console.error("Error trying to play audio:", error);
+                });
+            } else {
+                audioElement.pause();
+                iconPlay.classList.remove('fa-pause');
+                iconPlay.classList.add('fa-play');
+            }
+        } else {
+            console.log("Audio is not ready yet.");
+        }
+    });
+
+    // Mettre à jour le temps et la barre de progression
+    audioElement.addEventListener('timeupdate', () => {
+        const currentTime = audioElement.currentTime;
+        const duration = audioElement.duration;
+        const progressPercentage = (currentTime / duration) * 100;
+        progressSound.setAttribute('value', progressPercentage);
+        currentTimeCode.textContent = formatTime(currentTime);
+    });
+
+    audioElement.addEventListener('ended', () =>{
+        iconPlay.classList.remove('fa-pause');
+        iconPlay.classList.add('fa-play');
+        audioElement.currentTime = 0;
+    })
+
+    // Gérer le contrôle du volume
+    volumeLvl.addEventListener('input', (event) => {
+        const lvl = event.target.value;
+        audioElement.volume = lvl;
+
+        soundBtn.classList.remove('fa-volume-xmark', 'fa-volume-off', 'fa-volume-low', 'fa-volume-high');
+
+        if (lvl == 0) {
+            soundBtn.classList.add('fa-volume-xmark');
+        } else if (lvl < 0.3) {
+            soundBtn.classList.add('fa-volume-off');
+        } else if (lvl < 0.6) {
+            soundBtn.classList.add('fa-volume-low');
+        } else {
+            soundBtn.classList.add('fa-volume-high');
+        }
+    });
+});
+
+</script>
+</html>

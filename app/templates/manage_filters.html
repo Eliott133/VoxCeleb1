@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des filtres</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered">Ajouter un Filtre</h1>
+            <p class="subtitle has-text-centered">Gérer facilement les filtres en renseignant leur nom et leurs options.</p>
+
+            <!-- Formulaire pour ajouter un filtre -->
+            <form id="filterForm" class="box" method="post">
+                <div class="field">
+                    <label class="label">Nom du Filtre</label>
+                    <div class="control">
+                        <input class="input" type="text" id="filterName" placeholder="Exemple : Genre" name="filter_name" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Choix possibles (séparés par des virgules)</label>
+                    <div class="control">
+                        <input class="input" type="text" id="filterChoices" placeholder="Exemple : Homme, Femme" name="filter_choice" required>
+                    </div>
+                </div>
+
+                <div class="field is-grouped is-grouped-centered">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Ajouter le Filtre</button>
+                    </div>
+                </div>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="notification is-success pop-down">
+                        {% for category, message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            
+            <div class="box">
+                <h2 class="title is-4">Filtres existants</h2>
+                <ul>
+                    {% for f in filters %}
+                    <li class="is-flex is-align-items-center">
+                        <span><strong>{{ f.name }}</strong>: {{ ", ".join(f.choices) }}</span>
+                        <form method="POST" action="{{ url_for('filters.delete_filter', filter_name=f.name) }}" style="display: inline;">
+                            <button class="delete ml-3" type="submit">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+    </section>
+
+    <script>
+        function deleteFilter(filterName) {
+            if (confirm(`Voulez-vous vraiment supprimer le filtre "${filterName}" ?`)) {
+                fetch(`/delete_filter/${encodeURIComponent(filterName)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Recharge la page après suppression
+                    } else {
+                        alert('Une erreur est survenue lors de la suppression du filtre.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue.');
+                });
+            }
+        }
+    </script>
+    
+
+
+</body>
+</html>

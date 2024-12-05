@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/ico/icon.ico" type="image/x-icon">
+    <title>Filtrage des données</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> <!-- Lien vers la bibliothèque CSS Bulma -->
+    <link rel="stylesheet" href="/static/css/global.css"> <!-- Css -->
+    <link rel="stylesheet" href="static/css/scrollbar.css"> <!-- Style de la scrollbar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>  <!-- Ajout de Font Awesome pour les icônes -->
+</head>
+<body>
+
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered">Filtrage des données</h1>
+            <p class="subtitle has-text-centered">
+                Importez vos fichiers et téléchargez le fichier filtré.
+            </p>
+            <div class="box">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
+                <form action="/" method="POST" enctype="multipart/form-data">
+
+                    <div class="field">
+                        <label class="label">Sélectionner le genre</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select name="gender" id="gender">
+                                    <option value="all">Indifférent</option>
+                                    <option value="m">Homme</option>
+                                    <option value="f">Femme</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Sélectionner le temps d'enregistrement</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select name="time_record" id="gender">
+                                    <option value="all">Indifférent</option>
+                                    <option value="tc">Très court: ]0; 4.75]</option>
+                                    <option value="c">Court : ]4.75; 6]</option>
+                                    <option value="m">Moyen : ]6; 8]</option>
+                                    <option value="l">Long : ]8; 13]</option>
+                                    <option value="tl">Très long : ]13; 100]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="columns">
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">Fichier de métadonnées (.csv)</label>
+                                <div class="file">
+                                    <label class="file-label">
+                                    <input class="input hidden" type="file" name="meta_file" accept=".csv" id="file_csv_input">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                        </span>
+                                        <span class="file-label"> Choisir un fichier </span>
+                                    </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="column  is-one-quarter">
+                            <div class="field">
+                                <label class="label">Délimiteur du CSV</label>
+                                <div class="control">
+                                    <div class="select">
+                                        <select name="csv_separator" id="csv_separator">
+                                            <option value="\t">Tabulation (\t)</option>
+                                            <option value=",">Virgule (,)</option>
+                                            <option value=";">Point-virgule (;)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">Nombres de lignes à prévisualiser</label>
+                                <div class="control">
+                                    <input class="input" type="text" value="10" id="preview_head_number" min="5" max="50" required/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="csv-preview" class="preview hidden"></div>
+                    <div id="csv-info" class="hidden"></div>
+
+                    <div class="field">
+                        <label class="label">Fichier de données (.pkl)</label>
+                        <div class="file">
+                            <label class="file-label">
+                            <input class="input" style="display: none;" type="file" name="data_file" accept=".pkl">
+                              <span class="file-cta">
+                                <span class="file-icon">
+                                  <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label"> Choisir un fichier </span>
+                              </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Nom de sortie du fichier télécharger</label>
+                        <div class="control">
+                            <input class="input" type="text" name="output_filename" required>
+                            <i><small>Extension <code>.pkl</code> à mettre</small></i>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-centered">
+                        <div class="control">
+                            <button class="button is-success" type="submit">
+                                Filtrer et télécharger
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>Application Flask</strong> pour le filtrage des données. Créée à l'occasion du projet 
+                d'évaluation des l'interprétabilité des réprésentations vectorielles
+            </p>
+            <img src="/static/logo/logoMasterInformatiqueLeMans.png" alt="logo master informatique Le Mans">
+        </div>
+    </footer>
+</body>
+
+<script>
+    const inputElement = document.getElementById("file_csv_input");
+    const delimiterSelect = document.getElementById('csv_separator');
+    const maxRow = document.getElementById('preview_head_number');
+    var delimiterSelected = '\t';
+    var maxRowSelected = 10
+    delimiterSelect.addEventListener('change', ()=>{
+        delimiterSelected = delimiterSelect.value;
+    })
+
+    maxRow.addEventListener('change', ()=>{
+        maxRowSelected = maxRow.value;
+    })
+
+    inputElement.addEventListener("change", (event) => {
+        file = event.target.files[0]; // Fichier sélectionné
+        console.log(file)
+        if (file && file.name.endsWith('.csv')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const csvData = e.target.result; // Contenu du fichier CSV
+                csvToTable(csvData, delimiterSelected, maxRowSelected)
+            };
+            reader.readAsText(file); // Lire le fichier comme du texte
+        } else {
+            console.warn('Veuillez sélectionner un fichier CSV.');
+        }
+    });
+
+    function csvToTable(csv, delimiter = ',', maxRows = 10) {
+        // Diviser le contenu du CSV en lignes
+        const rows = csv.trim().split('\n');
+
+        // Extraire les en-têtes (première ligne)
+        const headers = rows.shift().split(delimiter);
+
+        const numRows = rows.length - 1; // Nombre de lignes (en ignorant l'en-tête)
+        const numColumns = rows[0].split(delimiter).length;
+
+        // Créer un élément table
+        const table = document.createElement('table');
+        table.classList.add('is-hoverable', 'table');
+        table.className = 'table is-bordered is-striped is-narrow is-hoverable is-fullwidth';
+
+        // Créer un élément thead pour les en-têtes
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header.trim(); // Ajouter chaque en-tête
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Créer un élément tbody pour les données
+        const tbody = document.createElement('tbody');
+        // Limiter le nombre de lignes affichées
+        const displayRows = rows.slice(0, maxRows);
+        displayRows.forEach(row => {
+            const dataRow = document.createElement('tr');
+            const cells = row.split(delimiter);
+            cells.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell.trim(); // Ajouter chaque cellule
+                dataRow.appendChild(td);
+            });
+            tbody.appendChild(dataRow);
+        });
+        table.appendChild(tbody);
+
+        // Insérer la table dans un conteneur (par exemple, un div avec id="csv-preview")
+        const previewContainer = document.getElementById('csv-preview');
+        previewContainer.innerHTML = ''; // Effacer le contenu précédent
+        previewContainer.classList.remove('hidden');
+        previewContainer.appendChild(table); // Ajouter la nouvelle table
+
+        const csvDimension = document.getElementById('csv-info');
+        csvDimension.classList.remove('hidden');
+        csvDimension.textContent = `Le fichier contient ${numRows} lignes et ${numColumns} colonnes.`;
+    }
+
+</script>
+</html>

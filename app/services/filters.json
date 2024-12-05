@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Genre",
+        "choices": [
+            "Homme",
+            "Femme"
+        ]
+    },
+    {
+        "name": "Age",
+        "choices": [
+            "Jeune",
+            "Adulte",
+            "Senior"
+        ]
+    },
+    {
+        "name": "Difficult\u00e9",
+        "choices": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ]
+    }
+]
