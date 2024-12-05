@@ -1,3 +1,4 @@
 *.wav
 .conda/
 *.pkl
+__pycache__/
