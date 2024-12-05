@@ -33,10 +33,10 @@
                         <label class="label">Sélectionner le genre</label>
                         <div class="control">
                             <div class="select is-fullwidth">
-                                <select name="gender" id="gender">
-                                    <option value="all">Indifférent</option>
-                                    <option value="m">Homme</option>
-                                    <option value="f">Femme</option>
+                                <select name="gender" id="gender" class="filter_input">
+                                    <option value="all" data-filter-name="all">Indifférent</option>
+                                    <option value="m" data-filter-name="men">Homme</option>
+                                    <option value="f" data-filter-name="women">Femme</option>
                                 </select>
                             </div>
                         </div>
@@ -46,13 +46,13 @@
                         <label class="label">Sélectionner le temps d'enregistrement</label>
                         <div class="control">
                             <div class="select is-fullwidth">
-                                <select name="time_record" id="gender">
-                                    <option value="all">Indifférent</option>
-                                    <option value="tc">Très court: ]0; 4.75]</option>
-                                    <option value="c">Court : ]4.75; 6]</option>
-                                    <option value="m">Moyen : ]6; 8]</option>
-                                    <option value="l">Long : ]8; 13]</option>
-                                    <option value="tl">Très long : ]13; 100]</option>
+                                <select name="time_record" id="time" class="filter_input select">
+                                    <option value="all" data-filter-name="all">Indifférent</option>
+                                    <option value="tc" data-filter-name="very_short_time">Très court: ]0; 4.75]</option>
+                                    <option value="c" data-filter-name="short_time">Court : ]4.75; 6]</option>
+                                    <option value="m" data-filter-name="intermediate_time">Moyen : ]6; 8]</option>
+                                    <option value="l" data-filter-name="long_time">Long : ]8; 13]</option>
+                                    <option value="tl" data-filter-name="very_long_time">Très long : ]13; 100]</option>
                                 </select>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                     <div class="field">
                         <label class="label">Nom de sortie du fichier télécharger</label>
                         <div class="control">
-                            <input class="input" type="text" name="output_filename" required>
+                            <input class="input" type="text" name="output_filename" id="output_filename" required>
                             <i><small>Extension <code>.pkl</code> à mettre</small></i>
                         </div>
                     </div>
@@ -151,12 +151,18 @@
     </footer>
 </body>
 
+<script src="/static/js/utils/times.js"></script>
 <script>
-    const inputElement = document.getElementById("file_csv_input");
+    const inputCsv = document.getElementById("file_csv_input");
     const delimiterSelect = document.getElementById('csv_separator');
     const maxRow = document.getElementById('preview_head_number');
+    const inputFileNameOutput = document.getElementById('output_filename');
+    const filtersInput = document.querySelectorAll('.filter_input');
+    const dateTime = new Date();
     var delimiterSelected = '\t';
     var maxRowSelected = 10
+    let activeFilters = {};
+
     delimiterSelect.addEventListener('change', ()=>{
         delimiterSelected = delimiterSelect.value;
     })
@@ -165,7 +171,27 @@
         maxRowSelected = maxRow.value;
     })
 
-    inputElement.addEventListener("change", (event) => {
+    filtersInput.forEach((element) => {
+        activeFilters[element.id] = element.options[element.selectedIndex].dataset.filterName || 'default';
+    });
+
+    let filterString = Object.entries(activeFilters)
+            .map(([key, value]) => key+"_"+value).join('_');
+
+    let fileOutputName = filterString+"_"+formatDateTime(dateTime)
+    inputFileNameOutput.value = fileOutputName;
+
+    filtersInput.forEach((element) => {
+        element.addEventListener('change', () => {
+            activeFilters[element.id] = element.options[element.selectedIndex].dataset.filterName;
+            const filterString = Object.entries(activeFilters)
+            .map(([key, value]) => key+"_"+value).join('_');
+            fileOutputName = filterString+"_"+formatDateTime(dateTime)
+            inputFileNameOutput.value = fileOutputName;
+        })
+    });
+
+    inputCsv.addEventListener("change", (event) => {
         file = event.target.files[0]; // Fichier sélectionné
         console.log(file)
         if (file && file.name.endsWith('.csv')) {
