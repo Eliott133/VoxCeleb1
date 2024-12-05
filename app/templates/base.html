@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/ico/icon.ico" type="image/x-icon">
+    <title>{% block title %}Filtrage des données{% endblock %}</title>
+    <meta name="description" content="Ecouter les fichiers de données">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> <!-- Lien vers la bibliothèque CSS Bulma -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}"> <!-- Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/scrollbar.css') }}"> <!-- Style de la scrollbar -->
+
+    {% block styles %}
+    {% endblock %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>  <!-- Ajout de Font Awesome pour les icônes -->
+    <script src="https://kit.fontawesome.com/b9ac88d97c.js" crossorigin="anonymous"></script>
+</head>
+
+<html>
+    <body>
+        
+        {% block content %}
+        {% endblock %}
+
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Application Flask</strong> pour le filtrage des données. Créée à l'occasion du projet 
+                    d'évaluation des l'interprétabilité des réprésentations vectorielles
+                </p>
+                <img src="/static/logo/logoMasterInformatiqueLeMans.png" alt="logo master informatique Le Mans">
+            </div>
+        </footer>
+
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>
