@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/static/ico/icon.ico" type="image/x-icon">
-    <title>Filtrage des données</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> <!-- Lien vers la bibliothèque CSS Bulma -->
-    <link rel="stylesheet" href="/static/css/global.css"> <!-- Css -->
-    <link rel="stylesheet" href="static/css/scrollbar.css"> <!-- Style de la scrollbar -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>  <!-- Ajout de Font Awesome pour les icônes -->
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block title %}
+    Filtrage des données
+{% endblock %}
+
+{% block content %}
     <section class="section">
         <div class="container">
             <h1 class="title has-text-centered">Filtrage des données</h1>
@@ -139,19 +131,10 @@
 
         </div>
     </section>
+{% endblock %}
 
-    <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-                <strong>Application Flask</strong> pour le filtrage des données. Créée à l'occasion du projet 
-                d'évaluation des l'interprétabilité des réprésentations vectorielles
-            </p>
-            <img src="/static/logo/logoMasterInformatiqueLeMans.png" alt="logo master informatique Le Mans">
-        </div>
-    </footer>
-</body>
-
-<script src="/static/js/utils/times.js"></script>
-<script src="/static/js/utils/csvToTable.js"></script>
-<script src="/static/js/indexScript.js"></script>
-</html>
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/utils/times.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/csvToTable.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/indexScript.js') }}"></script>
+{% endblock %}
