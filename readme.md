@@ -73,4 +73,5 @@ flask run --port=8080
 
 - Barre de chargement pour montrer à l'utilisateur lors des fonctions de filtres
 - A la fin de nouveau pkl rediriger directement sur les lecteurs audio
-- Tester l'interface pour voir si ya des erreurs
+- Tester l'interface pour voir si y a des erreurs
+- Passer en option à la commande de lancement du serveur l'option pour vider le dossier de sortie
