@@ -28,6 +28,12 @@ conda list
 conda env update --file environment.yaml --prune
 ```
 
+6) Création du dossier de sortie des fichier de données pkl : 
+```bash
+python output_script.py
+```
+Ce script va crée un dossier output dans app. Vous pouvez également le lancer à nouveau pour vider ce dossier si nécessaire.
+
 ## Lancement du serveur
 
 A la racine du projet
@@ -63,3 +69,8 @@ flask run --port=8080
 | Numpy       | 1.26.4       |
 | Librosa     | 0.10.2.post1 |
 
+## Fonctionnalité à venir
+
+- Barre de chargement pour montrer à l'utilisateur lors des fonctions de filtres
+- A la fin de nouveau pkl rediriger directement sur les lecteurs audio
+- Tester l'interface pour voir si ya des erreurs
