@@ -1,5 +1,3 @@
-// Sélectionner tous les lecteurs audio
-
 const audioPlayers = document.querySelectorAll('.audio-player');
 
 audioPlayers.forEach((audioPlayer) => {
@@ -12,8 +10,8 @@ audioPlayers.forEach((audioPlayer) => {
     const volumeLvl = audioPlayer.querySelector('.volume-lvl');
 
     // Charger l'élément audio associé
-    const audioElement = new Audio(audioPlayer.dataset.src); // Utiliser une data-attribute pour le fichier audio
-    console.log(audioElement);
+    const audioElement = new Audio(audioPlayer.dataset.src);
+
 
     // Afficher la durée totale une fois les métadonnées chargées
     audioElement.addEventListener("loadeddata", () => {
