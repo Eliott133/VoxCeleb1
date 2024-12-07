@@ -1,3 +1,8 @@
+'''
+Script permettant de nettoyer les fichiers de sortie
+ou de crée le dossier de sortie à la première execution du projet
+'''
+
 import os, shutil
 
 output_folder = './app/output/'
@@ -13,4 +18,4 @@ if(os.path.exists(output_folder)):
         except Exception as e:
             print('Problème lors de la supression %s. Raison: %s' % (file_path, e))
 else:
-    print(f"Le fichier {output_folder} n'existe pas")
+    os.makedirs(output_folder)
