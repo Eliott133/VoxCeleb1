@@ -86,7 +86,9 @@
         </div>
         {% if file_name %}
             <div class="block">
-                <h2 class="has-text-centered has-text-weight-bold is-size-4">Fichier en cours de lecture : <span class="has-text-primary">{{ file_name }}</span></h2>
+                <div class="block">
+                    <h2 class="has-text-centered has-text-weight-bold is-size-4">Fichier en cours de lecture : <span class="has-text-primary">{{ file_name }}</span></h2>
+                </div>
                 <div class="notification">
                     <p class="has-text-centered">{{ audio_display }} échantillons afficher sur <strong>{{ num_lines }}</strong></p>
                 </div>
