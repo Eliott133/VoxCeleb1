@@ -9,7 +9,32 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="container">
+
+        <div class="modal" id="modal-warning-file-extension">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">⚠️ Mauvaise extension de fichier</p>
+                <button class="delete" aria-label="close"></button>
+              </header>
+              <section class="modal-card-body">
+                <div class="block">
+                    <p>Le fichier que vous avez téléchargé n'est pas dans le format attendu. Veuillez réessayer avec une extension valide.</p>
+                </div>
+                <div class="block error-icon has-text-centered">
+                    <i class="fa-regular fa-circle-xmark is-size-1"></i>
+                </div>
+              </section>
+              <footer class="modal-card-foot is-justify-content-center">
+                <div class="buttons">
+                  <button class="button is-success">J'ai compris</button>
+                </div>
+              </footer>
+            </div>
+        </div>
+
         <div class="block">
             <div class="box">
                 {% with messages = get_flashed_messages() %}
@@ -19,27 +44,24 @@
                     </div>
                 {% endif %}
                 {% endwith %}
+
                 <form action="/audio" method="post" enctype="multipart/form-data">
+
                     <div class="columns is-vcentered">
-                        <div class="column">
-                            <div class="file">
-                                <label class="file-label">
-                                    <input class="file-input" type="file" name="pkl_file" accept=".pkl"/>
-                                    <span class="file-cta">
-                                    <span class="file-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label"> Choisir votre fichier </span>
-                                    </span>
-                                </label>
+                        <div class="column is-8">
+                            <div class="drop-zone is-flex is-justify-content-center is-align-items-center is-flex-direction-column" style="height: 100%; border: 2px dashed #ccc; padding: 20px;">
+                                <i class="fa-solid fa-file-import"></i>
+                                <p class="indication-process-file">Cliquer ou glisser déposer pour télécharger votre fichier de données</p>
+                                <input class="file-input" id="input_file_pkl" type="file" name="pkl_file" accept=".pkl" />
+                                <p class="file-name-indication">Aucun fichier selectionner</p>
                             </div>
                         </div>
-
+                    
                         <div class="column">
-                            <div class="field is-flex is-align-items-center">
-                                <label class="label mr-3" style="margin-bottom: 0;">Nombre d'audio à afficher</label>
+                            <div class="field">
+                                <label class="label">Nombre d'audio à afficher</label>
                                 <div class="control">
-                                    <div class="select">
+                                    <div class="select is-fullwidth">
                                         <select name="limit_audio" aria-label="nombre d'audio à afficher">
                                             <option value="10">10</option>
                                             <option value="25">25</option>
@@ -50,19 +72,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="column">
-                            <button class="button is-success is-fullwidth" type="submit" aria-label="envoyer">Envoyer</button>
+                            <div>
+                                <button class="button is-success is-fullwidth" type="submit" aria-label="envoyer">Envoyer</button>
+                            </div>
                         </div>
                     </div>
+                    
                 </form>
             </div>
         </div>
         {% if file_name %}
             <div class="block">
                 <h2 class="has-text-centered has-text-weight-bold is-size-4">Fichier en cours de lecture : <span class="has-text-primary">{{ file_name }}</span></h2>
-                <div class="notification is-info is-light">
+                <div class="notification">
                     <p class="has-text-centered">{{ audio_display }} échantillons afficher sur <strong>{{ num_lines }}</strong></p>
                 </div>
             </div>
@@ -133,7 +155,9 @@
 
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/utils/times.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/file.js') }}" type="module"></script>
     <script src="{{ url_for('static', filename='js/audioScript.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils/dropZone.js') }}" type="module"></script>
 {% endblock %}
 
 </html>
