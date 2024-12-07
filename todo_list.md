@@ -3,7 +3,7 @@
 - A la fin de nouveau pkl rediriger directement sur les lecteurs audio
 - Tester l'interface pour voir si ya des erreurs
 - Pouvoir changer le nombre d'échantillon à afficher en ajax
-- DropZone pour les fichiers en JS
+~~- DropZone pour les fichiers en JS~~
 - Choisir le set dans le CSV
 ~~- Utiliser les extends des templates (refactor code html)~~
 ~~- Générer le fichier de sortie en fonction des filtres~~
