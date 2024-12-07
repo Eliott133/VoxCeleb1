@@ -14,19 +14,15 @@
     background-color: #faf5ed;
 }
 
-/*.audio-player{
-    background: rgba( 255, 255, 255, 0.15 );
-    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 3.5px );
-    -webkit-backdrop-filter: blur( 3.5px );
-    border-radius: 10px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-}*/
-
 .truncated-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
     display: block;
+}
+
+.incorrect{
+    background-color: rgba(231, 76, 60, 0.9);
+    color: white;
 }
