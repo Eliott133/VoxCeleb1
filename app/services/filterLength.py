@@ -4,7 +4,6 @@ import librosa
 import os 
 from app.services.erreur import InvalidParameter
 from app.services.pkl_service import get_path_audio
-#pandas version '2.2.3' 
 
 
 #Tranche correspond aux limites pour la repartition des temps
@@ -49,9 +48,3 @@ def encode_length(data,seuil,tranche={'tc':(0,4.75),'c' :(4.75,6),'m':(6,8),'l':
         return data
     else: 
         raise InvalidParameter(f"seuil must be in {tranche.keys()} (Capital except)")
-
-"""
-meta = pd.read_csv("../data/data/voxceleb1/meta.csv",delimiter="\t" )
-data= pd.read_pickle("../data/data/voxceleb1/train.pkl")
-encode_length(data,"tc",path_audio='../data/data/voxceleb1/',file_save="../data/data/voxceleb1/trainTc.pkl")
-"""
