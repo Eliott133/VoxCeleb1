@@ -14,7 +14,8 @@ def get_audio():
     limit_audio = request.form['limit_audio']
     file_name = file.filename
 
-    if file.filename != '':
+    if file.filename != '' and allowed_file(file.filename) == 'pkl':
+        
         df = pd.read_pickle(file)
 
         num_lines = len(df)
@@ -25,3 +26,7 @@ def get_audio():
     
     flash("Vous devez téléverser un fichier de données au format .pkl")
     return redirect(url_for('audio.audioListening'))
+
+def allowed_file(filename):
+    print(filename.rsplit('.', 1)[1].lower())
+    return filename.rsplit('.', 1)[1].lower()
