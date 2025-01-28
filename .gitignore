@@ -4,5 +4,4 @@
 __pycache__/
 .ipynb_checkpoints/
 output/
-static/alignments/*
-static/wav/*
+*.TextGrid
